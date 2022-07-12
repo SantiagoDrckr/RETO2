@@ -1,0 +1,360 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Vistas;
+
+import modelo.Conexion;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author ansab
+ */
+public class UserMenu extends javax.swing.JFrame {
+
+    //instancia conexion tabla
+    Conexion conexion = new Conexion();
+    Connection connetion;
+    //Statement permite ejecutar SQL
+    Statement st;
+    ResultSet rs;
+    //crear instancia de la tabla de la interfaz
+    DefaultTableModel contenidoTablaEmpleados;
+
+    /**
+     * Creates new form UserMenu
+     */
+    public UserMenu() {
+        initComponents();
+        setLocationRelativeTo(null);
+        listarEmpleados();
+    }
+// metodo que trae a todos los empleados exitentes de la base de datos
+
+    private void listarEmpleados() {
+        String filtroBusqueda = txtSearch.getText();
+        if (filtroBusqueda.isEmpty()) {
+            String queryConsulta = "SELECT * FROM  empleados";
+            // intentar ejecutar query de la base de datos
+            try {
+                connetion = conexion.getConnetion();
+                st = connetion.createStatement();
+                rs = st.executeQuery(queryConsulta);
+                // crear un objeto donde se guarde resultado de la consulta
+                Object[] empleados = new Object[6];
+                //actualizar la propiedad model de la tabla
+                contenidoTablaEmpleados = (DefaultTableModel) tblEmpleados.getModel();
+                //recorrer resultado de la consulta del query
+                while (rs.next()) {
+                    empleados[0] = rs.getInt("idEmp");
+                    empleados[1] = rs.getString("NOMBREeMO");
+                    empleados[2] = rs.getString("apellidos");
+                    empleados[3] = rs.getString("tipoDocumento");
+                    empleados[4] = rs.getString("documento");
+                    empleados[5] = rs.getString("correo");
+                    // creamos una fila dentro de la tabla por cada empleado
+                    contenidoTablaEmpleados.addRow(empleados);
+                    System.out.println("id: " + empleados[0] + ", nombre: " + empleados[1] + ", documento: " + empleados[2] + " " + empleados[3] + ",correo: " + empleados[4]);
+                    tblEmpleados.setModel(contenidoTablaEmpleados);
+                }
+
+            } catch (SQLException e) {
+                System.out.println("Error");
+
+            }
+
+        } else {
+            String queryConsulta = "SELECT * FROM  empleados WHERE NOMBREeMO LIKE '%"+filtroBusqueda+"%'  OR apellidos LIKE '%"+filtroBusqueda+"%'";
+            System.out.println(queryConsulta);
+            try {
+                connetion = conexion.getConnetion();
+                st = connetion.createStatement();
+                rs = st.executeQuery(queryConsulta);
+                // crear un objeto donde se guarde resultado de la consulta
+                Object[] empleados = new Object[6];
+                //actualizar la propiedad model de la tabla
+                contenidoTablaEmpleados = (DefaultTableModel) tblEmpleados.getModel();
+                //recorrer resultado de la consulta del query
+                while (rs.next()) {
+                    empleados[0] = rs.getInt("idEmp");
+                    empleados[1] = rs.getString("NOMBREeMO");
+                    empleados[2] = rs.getString("apellidos");
+                    empleados[3] = rs.getString("tipoDocumento");
+                    empleados[4] = rs.getString("documento");
+                    empleados[5] = rs.getString("correo");
+                    // creamos una fila dentro de la tabla por cada empleado
+                    contenidoTablaEmpleados.addRow(empleados);
+                    System.out.println("id: " + empleados[0] + ", nombre: " + empleados[1] + ", documento: " + empleados[2] + " " + empleados[3] + ",correo: " + empleados[4]);
+                    tblEmpleados.setModel(contenidoTablaEmpleados);
+                }
+
+            } catch (SQLException e) {
+                System.out.println("Error arriba");
+
+            }
+        }
+
+    }
+
+    //cuando añado un nuevo empleado el proceso background es el siguiente:
+    //1 alamacena new
+    //2 eliminar datos
+    //3 llamar la tabla para ver db de la tabla
+    //4New tabla con el personaje recien creado
+    private void borrarDatosTabla() {
+        for (int i = 0; i < tblEmpleados.getRowCount(); i++) {
+            contenidoTablaEmpleados.removeRow(i);
+            i = i - 1;
+
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jTabbedPane8 = new javax.swing.JTabbedPane();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblEmpleados = new javax.swing.JTable();
+        btnAddUser = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        txtSearch = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jTabbedPane8.setBackground(new java.awt.Color(204, 204, 204));
+
+        jTabbedPane1.setBackground(new java.awt.Color(204, 204, 204));
+        jTabbedPane8.addTab("Home", jTabbedPane1);
+
+        jPanel3.setBackground(new java.awt.Color(204, 204, 204));
+
+        tblEmpleados.setForeground(new java.awt.Color(0, 0, 0));
+        tblEmpleados.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Id", "Nombre", "Apellido(s)", "Tipo de documento", "Documento", "Correo"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblEmpleados.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblEmpleadosMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblEmpleados);
+
+        btnAddUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/avatar.png"))); // NOI18N
+        btnAddUser.setText("Nuevo");
+        btnAddUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddUserActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setText("LISTA DE EMPLEADOS");
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/logo.png"))); // NOI18N
+
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Buscar");
+
+        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/showUser.png"))); // NOI18N
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(51, 51, 51)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnSearch)
+                                .addGap(85, 85, 85)
+                                .addComponent(btnAddUser))
+                            .addComponent(jLabel1)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 962, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(67, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1)
+                        .addGap(14, 14, 14)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAddUser, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)
+                            .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane8.addTab("Empleados", jPanel2);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane8)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane8)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAddUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddUserActionPerformed
+        // crear instancia del dialogo
+        AddUserForm addUserForm = new AddUserForm(this, true);
+        addUserForm.setVisible(true);
+        borrarDatosTabla();
+        listarEmpleados();
+    }//GEN-LAST:event_btnAddUserActionPerformed
+
+
+    private void tblEmpleadosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEmpleadosMouseClicked
+        // definir variable # fila seleccionado
+        int row = tblEmpleados.getSelectedRow();
+        System.out.println("fila seleccionada #: " + row);
+        // validar si usuario no selecciono un usuario
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "debes seleccionar un usuario", "", JOptionPane.ERROR_MESSAGE);
+
+        } else {
+            int idEmp = Integer.parseInt(tblEmpleados.getValueAt(row, 0).toString());
+            String NOMBREeMO = tblEmpleados.getValueAt(row, 1).toString();
+            String apellidos = tblEmpleados.getValueAt(row, 2).toString();
+            String tipoDocumento = tblEmpleados.getValueAt(row, 3).toString();
+            String documento = tblEmpleados.getValueAt(row, 4).toString();
+            String correo = tblEmpleados.getValueAt(row, 5).toString();
+
+            System.out.println("idEmp: " + idEmp + ", nombre: " + NOMBREeMO + "  " + apellidos
+                    + ", documento: " + tipoDocumento + " " + documento + ", correo: " + correo);
+
+            ShowUserForm showUserForm = new ShowUserForm(this, true);
+            showUserForm.recibeDatos(idEmp, NOMBREeMO, apellidos, tipoDocumento, documento, correo);
+            showUserForm.setVisible(true);
+            //actualizacion de la tabla borra datos y vuelve a cargar
+            borrarDatosTabla();
+            listarEmpleados();
+        }
+    }//GEN-LAST:event_tblEmpleadosMouseClicked
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        borrarDatosTabla();
+        listarEmpleados();
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(UserMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(UserMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(UserMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(UserMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new UserMenu().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddUser;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane8;
+    private javax.swing.JTable tblEmpleados;
+    private javax.swing.JTextField txtSearch;
+    // End of variables declaration//GEN-END:variables
+}
